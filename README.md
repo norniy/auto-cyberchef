@@ -35,7 +35,7 @@ Final result: Hello
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/auto-cyberchef.git
+git clone https://github.com/norniy/auto-cyberchef.git
 cd auto-cyberchef
 pip install -r requirements.txt
 python main.py shell
@@ -49,7 +49,7 @@ python main.py shell
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/auto-cyberchef.git
+git clone https://github.com/norniy/auto-cyberchef.git
 cd auto-cyberchef
 
 # Install optional dev dependencies (pytest for running tests)
@@ -351,13 +351,13 @@ pytest tests/ -v
 
 Contributions are welcome! Here are some ways to get started:
 
-- 🐛 **Report bugs** by opening an [Issue](https://github.com/YOUR_USERNAME/auto-cyberchef/issues)
+- 🐛 **Report bugs** by opening an [Issue](https://github.com/norniy/auto-cyberchef/issues)
 - ✨ **Request features** via Issues tagged `enhancement`
 - 🔧 **Fix a bug or add a feature** — open a Pull Request
 
 ### Good First Issues
 
-Look for issues tagged [`good first issue`](https://github.com/YOUR_USERNAME/auto-cyberchef/issues?q=label%3A%22good+first+issue%22):
+Look for issues tagged [`good first issue`](https://github.com/norniy/auto-cyberchef/issues?q=label%3A%22good+first+issue%22):
 
 - Add support for a new encoding (Base58, XOR, etc.)
 - Add more test cases
@@ -367,7 +367,7 @@ Look for issues tagged [`good first issue`](https://github.com/YOUR_USERNAME/aut
 ### Development Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/auto-cyberchef.git
+git clone https://github.com/norniy/auto-cyberchef.git
 cd auto-cyberchef
 pip install -r requirements.txt
 python -m unittest tests.test_basic -v   # make sure all tests pass before contributing

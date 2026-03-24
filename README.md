@@ -287,18 +287,18 @@ Encoding breakdown:
 ---
 
 ## 🔤 Supported Encodings
-
-| Encoding | Decode | Encode | Example |
-|---|---|---|---|
-| Base64 | ✅ | ✅ | `SGVsbG8=` |
-| Base32 | ✅ | ✅ | `JBSWY3DP` |
-| Hexadecimal | ✅ | ✅ | `48656c6c6f` |
-| Binary | ✅ | ✅ | `01001000 01100101...` |
-| URL Encoding | ✅ | ✅ | `Hello%20World%21` |
-| HTML Entities | ✅ | ✅ | `&#72;&#101;&#108;...` |
-| ROT13 | ✅ | ✅ | `Uryyb` |
-| Morse Code | ✅ | ✅ | `.... . .-.. .-.. ---` |
-| Caesar Cipher | ✅ | ❌ | `Khoor` (shift 3) |
+ 
+| Encoding | Decode | Encode | Decode Example | Encode Example |
+|---|---|---|---|---|
+| Base64 | ✅ | ✅ | `SGVsbG8=` → `Hello` | `Hello` → `SGVsbG8=` |
+| Base32 | ✅ | ✅ | `JBSWY3DP` → `Hello` | `Hello` → `JBSWY3DP` |
+| Hexadecimal | ✅ | ✅ | `48656c6c6f` → `Hello` | `Hello` → `48656c6c6f` |
+| Binary | ✅ | ✅ | `01001000...` → `Hello` | `Hello` → `01001000 01100101...` |
+| URL Encoding | ✅ | ✅ | `Hello%20World%21` → `Hello World!` | `Hello World!` → `Hello%20World%21` |
+| HTML Entities | ✅ | ✅ | `&#72;&#101;...` → `Hello` | `<b>Hi</b>` → `&lt;b&gt;Hi&lt;/b&gt;` |
+| ROT13 | ✅ | ✅ | `Uryyb` → `Hello` | `Hello` → `Uryyb` |
+| Morse Code | ✅ | ✅ | `.... . .-.. .-.. ---` → `HELLO` | `HELLO` → `.... . .-.. .-.. ---` |
+| Caesar Cipher | ✅ | ❌ | `Khoor` (shift 3) → `Hello` | — |
 
 ---
 

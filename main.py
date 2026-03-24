@@ -217,6 +217,114 @@ def cmd_brute(args: argparse.Namespace) -> int:
     return 0
 
 
+def _encode_data(data: str, encoding: str) -> tuple:
+    """
+    Encode a plaintext string using the specified encoding format.
+
+    Args:
+        data:     Plain text string to encode.
+        encoding: Target encoding name (case-insensitive).
+
+    Returns:
+        Tuple of (encoded_string, success).
+    """
+    import base64
+    from urllib.parse import quote
+    import html
+
+    enc = encoding.lower().strip()
+
+    try:
+        if enc in ("base64", "b64"):
+            result = base64.b64encode(data.encode("utf-8")).decode("ascii")
+            return result, True
+
+        elif enc in ("base32", "b32"):
+            result = base64.b32encode(data.encode("utf-8")).decode("ascii")
+            return result, True
+
+        elif enc in ("hex",):
+            result = data.encode("utf-8").hex()
+            return result, True
+
+        elif enc in ("binary", "bin"):
+            bits = "".join(format(byte, "08b") for byte in data.encode("utf-8"))
+            # Group into 8-bit chunks separated by spaces for readability
+            result = " ".join(bits[i:i+8] for i in range(0, len(bits), 8))
+            return result, True
+
+        elif enc in ("url",):
+            result = quote(data, safe="")
+            return result, True
+
+        elif enc in ("html",):
+            result = html.escape(data)
+            return result, True
+
+        elif enc in ("rot13",):
+            table = str.maketrans(
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+                "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm",
+            )
+            return data.translate(table), True
+
+        elif enc in ("morse",):
+            CHAR_TO_MORSE = {
+                "A": ".-",   "B": "-...", "C": "-.-.", "D": "-..",
+                "E": ".",    "F": "..-.", "G": "--.",  "H": "....",
+                "I": "..",   "J": ".---", "K": "-.-",  "L": ".-..",
+                "M": "--",   "N": "-.",   "O": "---",  "P": ".--.",
+                "Q": "--.-", "R": ".-.",  "S": "...",  "T": "-",
+                "U": "..-",  "V": "...-", "W": ".--",  "X": "-..-",
+                "Y": "-.--", "Z": "--..",
+                "0": "-----", "1": ".----", "2": "..---", "3": "...--",
+                "4": "....-", "5": ".....", "6": "-....", "7": "--...",
+                "8": "---..", "9": "----.",
+            }
+            words = data.upper().split()
+            encoded_words = []
+            for word in words:
+                chars = []
+                for ch in word:
+                    if ch in CHAR_TO_MORSE:
+                        chars.append(CHAR_TO_MORSE[ch])
+                    else:
+                        return f"Cannot encode character '{ch}' to Morse", False
+                encoded_words.append(" ".join(chars))
+            return " / ".join(encoded_words), True
+
+        else:
+            return f"Encoding not supported: {encoding}. Supported: base64, base32, hex, binary, url, html, rot13, morse", False
+
+    except Exception as exc:
+        return f"Encode error: {exc}", False
+
+
+def cmd_encode(args) -> int:
+    """
+    Handle the `encode` sub-command.
+
+    Encodes a plaintext string into the specified format and prints the result.
+    """
+    data = args.input
+    encoding = args.encoding
+
+    result, success = _encode_data(data, encoding)
+
+    if success:
+        print(bold(f"Encoded [{cyan(encoding)}]:"))
+        print(green(result))
+        if args.json:
+            import json
+            payload = {"input": data, "encoding": encoding, "result": result, "success": True}
+            print(json.dumps(payload, ensure_ascii=False, indent=2))
+    else:
+        print(red(f"Encode failed: {result}"))
+        return 1
+
+    return 0
+
+
 def cmd_stats(args: argparse.Namespace) -> int:
     """Handle the `stats` sub-command."""
     try:
@@ -425,6 +533,20 @@ def _shell_brute(data: str, flags: dict) -> None:
     if shown == 0:
         print(yellow("  No decoder produced a successful result."))
 
+def _shell_encode(data: str, flags: dict) -> None:
+    """Execute an encode command inside the shell."""
+    enc = flags.get("encoding")
+    if not enc:
+        print(yellow("  Usage: encode <string> -e <encoding>"))
+        print(yellow("  Supported: base64, base32, hex, binary, url, html, rot13, morse"))
+        return
+    result, success = _encode_data(data, enc)
+    if success:
+        print(f"  {bold('Encoding:')} {cyan(enc)}")
+        print(f"  {bold('Result:  ')} {green(result)}")
+    else:
+        print(red(f"  {result}"))
+
 
 def cmd_shell(args: argparse.Namespace) -> int:
     """
@@ -489,7 +611,7 @@ def cmd_shell(args: argparse.Namespace) -> int:
             continue
 
         # ---- decode / detect / auto / brute ----
-        if command not in ("decode", "detect", "auto", "brute"):
+        if command not in ("decode", "detect", "auto", "brute", "encode"):
             print(red(f"  Unknown command: '{command}'  —  type 'help' for available commands."))
             continue
 
@@ -510,6 +632,8 @@ def cmd_shell(args: argparse.Namespace) -> int:
                 _shell_auto(data, flags)
             elif command == "brute":
                 _shell_brute(data, flags)
+            elif command == "encode":
+                _shell_encode(data, flags)
         except Exception as exc:
             print(red(f"  Error: {exc}"))
             if os.environ.get("AUTOCHEF_DEBUG"):
@@ -592,6 +716,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_brute.add_argument("--caesar", action="store_true",
                          help="Also show all 25 Caesar cipher shifts")
 
+    # ---- encode ----
+    p_encode = sub.add_parser("encode", help="Encode a plaintext string into a target format")
+    p_encode.add_argument("input", help="Plain text string to encode")
+    p_encode.add_argument(
+        "-e", "--encoding", required=True,
+        help="Target encoding: base64, base32, hex, binary, url, html, rot13, morse"
+    )
+    p_encode.add_argument("--json", action="store_true", help="Output result as JSON")
+    
     # ---- stats ----
     p_stats = sub.add_parser("stats", help="Show encoding statistics for a file")
     p_stats.add_argument("file", help="Path to the input file")
@@ -627,6 +760,7 @@ def main() -> int:
         "brute":       cmd_brute,
         "stats":       cmd_stats,
         "shell":       cmd_shell,
+        "encode":      cmd_encode,
     }
 
     handler = handlers.get(args.command)

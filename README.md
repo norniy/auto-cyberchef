@@ -67,6 +67,7 @@ python main.py --version
 |---|---|
 | **Auto-detect** | Identify Base64, Hex, Binary, URL, ROT13, Morse, HTML, Caesar, Base32 |
 | **Auto-decode** | Automatically unwrap up to 10 nested encoding layers |
+| **Encode** | Encode plaintext into Base64, Base32, Hex, Binary, URL, HTML, ROT13, Morse |
 | **Interactive shell** | REPL with command history and tab completion |
 | **Batch file decode** | Decode every line of a file in one command |
 | **Brute-force mode** | Try every decoder at once and show all results |
@@ -79,8 +80,6 @@ python main.py --version
 
 ### Interactive Shell (Recommended)
 
-Launch the interactive shell for a full session:
-
 ```bash
 python main.py shell
 ```
@@ -89,6 +88,10 @@ python main.py shell
 autochef > decode SGVsbG8=
   Detected: Base64
   Result:   Hello
+
+autochef > encode Hello -e base64
+  Encoding: base64
+  Result:   SGVsbG8=
 
 autochef > detect 48656c6c6f
   Possible encodings:
@@ -134,6 +137,33 @@ python main.py decode SGVsbG8= --json
 ```
 Detected encoding: Base64
 Decoded result: Hello
+```
+
+---
+
+#### `encode` — Encode a string
+
+```bash
+# Encode plaintext into a target format
+python main.py encode "Hello" -e base64
+python main.py encode "Hello" -e hex
+python main.py encode "Hello World" -e morse
+python main.py encode "Hello" -e binary
+python main.py encode "Hello World!" -e url
+python main.py encode "<b>Hello</b>" -e html
+python main.py encode "Hello" -e rot13
+
+# Output as JSON
+python main.py encode "Hello" -e base64 --json
+```
+
+**Output:**
+```
+Encoded [base64]:
+SGVsbG8=
+
+Encoded [morse]:
+.... . .-.. .-.. --- / .-- --- .-. .-.. -..
 ```
 
 ---
@@ -201,9 +231,6 @@ python main.py decode-file encoded.txt -e base64
 
 # Output as JSON
 python main.py decode-file encoded.txt --json
-
-# Treat entire file as one string
-python main.py decode-file encoded.txt --blob
 ```
 
 Example input file (`encoded.txt`):
@@ -261,17 +288,17 @@ Encoding breakdown:
 
 ## 🔤 Supported Encodings
 
-| Encoding | Example Input | Decoded Output |
-|---|---|---|
-| Base64 | `SGVsbG8=` | `Hello` |
-| Base32 | `JBSWY3DP` | `Hello` |
-| Hexadecimal | `48656c6c6f` | `Hello` |
-| Binary | `01001000 01100101...` | `Hello` |
-| URL Encoding | `Hello%20World%21` | `Hello World!` |
-| HTML Entities | `&#72;&#101;&#108;...` | `Hello` |
-| ROT13 | `Uryyb` | `Hello` |
-| Morse Code | `.... . .-.. .-.. ---` | `HELLO` |
-| Caesar Cipher | `Khoor` (shift 3) | `Hello` |
+| Encoding | Decode | Encode | Example |
+|---|---|---|---|
+| Base64 | ✅ | ✅ | `SGVsbG8=` |
+| Base32 | ✅ | ✅ | `JBSWY3DP` |
+| Hexadecimal | ✅ | ✅ | `48656c6c6f` |
+| Binary | ✅ | ✅ | `01001000 01100101...` |
+| URL Encoding | ✅ | ✅ | `Hello%20World%21` |
+| HTML Entities | ✅ | ✅ | `&#72;&#101;&#108;...` |
+| ROT13 | ✅ | ✅ | `Uryyb` |
+| Morse Code | ✅ | ✅ | `.... . .-.. .-.. ---` |
+| Caesar Cipher | ✅ | ❌ | `Khoor` (shift 3) |
 
 ---
 
@@ -361,7 +388,6 @@ Look for issues tagged [`good first issue`](https://github.com/norniy/auto-cyber
 
 - Add support for a new encoding (Base58, XOR, etc.)
 - Add more test cases
-- Improve README translations
 - Fix a typo or documentation gap
 
 ### Development Setup

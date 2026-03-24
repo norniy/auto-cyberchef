@@ -255,18 +255,18 @@ Encoding breakdown:
 ---
 
 ## 🔤 支持的编码格式
-
-| 编码格式 | 解码 | 编码 | 示例 |
-|---|---|---|---|
-| Base64 | ✅ | ✅ | `SGVsbG8=` |
-| Base32 | ✅ | ✅ | `JBSWY3DP` |
-| 十六进制 Hex | ✅ | ✅ | `48656c6c6f` |
-| 二进制 Binary | ✅ | ✅ | `01001000 01100101...` |
-| URL 编码 | ✅ | ✅ | `Hello%20World%21` |
-| HTML 实体 | ✅ | ✅ | `&#72;&#101;&#108;...` |
-| ROT13 | ✅ | ✅ | `Uryyb` |
-| 摩尔斯电码 | ✅ | ✅ | `.... . .-.. .-.. ---` |
-| 凯撒密码 | ✅ | ❌ | `Khoor`（位移 3） |
+ 
+| 编码格式 | 解码 | 编码 | 解码示例 | 编码示例 |
+|---|---|---|---|---|
+| Base64 | ✅ | ✅ | `SGVsbG8=` → `Hello` | `Hello` → `SGVsbG8=` |
+| Base32 | ✅ | ✅ | `JBSWY3DP` → `Hello` | `Hello` → `JBSWY3DP` |
+| 十六进制 Hex | ✅ | ✅ | `48656c6c6f` → `Hello` | `Hello` → `48656c6c6f` |
+| 二进制 Binary | ✅ | ✅ | `01001000...` → `Hello` | `Hello` → `01001000 01100101...` |
+| URL 编码 | ✅ | ✅ | `Hello%20World%21` → `Hello World!` | `Hello World!` → `Hello%20World%21` |
+| HTML 实体 | ✅ | ✅ | `&#72;&#101;...` → `Hello` | `<b>Hi</b>` → `&lt;b&gt;Hi&lt;/b&gt;` |
+| ROT13 | ✅ | ✅ | `Uryyb` → `Hello` | `Hello` → `Uryyb` |
+| 摩尔斯电码 | ✅ | ✅ | `.... . .-.. .-.. ---` → `HELLO` | `HELLO` → `.... . .-.. .-.. ---` |
+| 凯撒密码 | ✅ | ❌ | `Khoor`（位移 3）→ `Hello` | — |
 
 ---
 
